@@ -1,0 +1,72 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "genops"
+version = "1.0.0"
+description = "GenOps: A Governance-First Architecture for AI in CI/CD Pipelines"
+readme = "README.md"
+license = {text = "MIT"}
+authors = [
+    {name = "Neeraj Kumar Singh Beshane", email = "neeraj@example.com"}
+]
+keywords = [
+    "devops",
+    "ci-cd",
+    "ai",
+    "governance",
+    "canary-deployment",
+    "risk-management",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Software Development :: Build Tools",
+    "Topic :: Software Development :: Quality Assurance",
+]
+requires-python = ">=3.9"
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "black>=23.0.0",
+    "ruff>=0.1.0",
+]
+
+[project.scripts]
+genops-demo = "run_demo:main"
+
+[project.urls]
+Homepage = "https://github.com/neerazz/genops"
+Documentation = "https://github.com/neerazz/genops#readme"
+Repository = "https://github.com/neerazz/genops"
+Issues = "https://github.com/neerazz/genops/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["genops*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = "-v --tb=short"
+
+[tool.black]
+line-length = 100
+target-version = ["py39", "py310", "py311", "py312"]
+
+[tool.ruff]
+line-length = 100
+select = ["E", "F", "W", "I", "N"]
+ignore = ["E501"]  # Line length handled by black
