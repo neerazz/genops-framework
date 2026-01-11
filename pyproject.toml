@@ -9,7 +9,7 @@ description = "GenOps: A Governance-First Architecture for AI in CI/CD Pipelines
 readme = "README.md"
 license = {text = "MIT"}
 authors = [
-    {name = "Neeraj Kumar Singh Beshane", email = "neeraj@example.com"}
+    {name = "Neeraj Kumar Singh Beshane", email = "b.neerajkumarsingh@gmail.com"}
 ]
 keywords = [
     "devops",
@@ -32,7 +32,9 @@ classifiers = [
     "Topic :: Software Development :: Quality Assurance",
 ]
 requires-python = ">=3.9"
-dependencies = []
+dependencies = [
+    "psutil>=5.0.0",
+]
 
 [project.optional-dependencies]
 dev = [
@@ -40,16 +42,17 @@ dev = [
     "pytest-cov>=4.0.0",
     "black>=23.0.0",
     "ruff>=0.1.0",
+    "hypothesis>=6.0.0",
 ]
 
 [project.scripts]
 genops-demo = "run_demo:main"
 
 [project.urls]
-Homepage = "https://github.com/neerazz/genops"
-Documentation = "https://github.com/neerazz/genops#readme"
-Repository = "https://github.com/neerazz/genops"
-Issues = "https://github.com/neerazz/genops/issues"
+Homepage = "https://github.com/neerazz/genops-framework"
+Documentation = "https://github.com/neerazz/genops-framework#readme"
+Repository = "https://github.com/neerazz/genops-framework"
+Issues = "https://github.com/neerazz/genops-framework/issues"
 
 [tool.setuptools.packages.find]
 where = ["."]

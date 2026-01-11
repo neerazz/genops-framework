@@ -1,0 +1,181 @@
+# GenOps Framework - Docker Compose Configuration
+# ===============================================
+#
+# Multi-container setup for GenOps framework with all necessary services
+# for complete research reproducibility and production deployment.
+#
+
+version: '3.8'
+
+services:
+  # Main GenOps application
+  genops-app:
+    build:
+      context: .
+      target: production
+    container_name: genops-framework
+    environment:
+      - GENOPS_ENV=production
+      - GENOPS_DATABASE_URL=sqlite:///data/genops.db
+      - GENOPS_REDIS_URL=redis://genops-redis:6379
+      - GENOPS_LOG_LEVEL=INFO
+      - GENOPS_MAX_WORKERS=4
+    volumes:
+      - genops-data:/data
+      - genops-config:/app/config
+      - genops-logs:/app/logs
+    depends_on:
+      - genops-redis
+      - genops-postgres
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "from genops.persistence import get_data_store; get_data_store().health_check()"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Redis for caching and session storage
+  genops-redis:
+    image: redis:7-alpine
+    container_name: genops-redis
+    command: redis-server --appendonly yes
+    volumes:
+      - genops-redis-data:/data
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # PostgreSQL for production database
+  genops-postgres:
+    image: postgres:15-alpine
+    container_name: genops-postgres
+    environment:
+      - POSTGRES_DB=genops
+      - POSTGRES_USER=genops
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-genops_password}
+    volumes:
+      - genops-postgres-data:/var/lib/postgresql/data
+      - ./scripts/init-db.sql:/docker-entrypoint-initdb.d/init-db.sql
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U genops"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Research and validation environment
+  genops-research:
+    build:
+      context: .
+      target: research
+    container_name: genops-research
+    environment:
+      - GENOPS_ENV=research
+      - GENOPS_DATABASE_URL=sqlite:///data/genops.db
+      - GENOPS_REDIS_URL=redis://genops-redis:6379
+      - JUPYTER_TOKEN=${JUPYTER_TOKEN:-genops_research}
+    volumes:
+      - genops-data:/data
+      - genops-config:/app/config
+      - genops-results:/app/results
+      - genops-plots:/app/plots
+      - ./notebooks:/app/notebooks
+    depends_on:
+      - genops-app
+      - genops-redis
+    ports:
+      - "8888:8888"
+    profiles:
+      - research
+    restart: "no"
+
+  # Monitoring and observability stack
+  genops-monitoring:
+    image: prom/prometheus:latest
+    container_name: genops-prometheus
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - genops-monitoring-data:/prometheus
+    ports:
+      - "9090:9090"
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    profiles:
+      - monitoring
+    restart: unless-stopped
+
+  # Grafana for dashboards
+  genops-grafana:
+    image: grafana/grafana:latest
+    container_name: genops-grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin}
+    volumes:
+      - genops-grafana-data:/var/lib/grafana
+      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards
+    ports:
+      - "3000:3000"
+    depends_on:
+      - genops-monitoring
+    profiles:
+      - monitoring
+    restart: unless-stopped
+
+  # Load testing with Locust
+  genops-load-test:
+    build:
+      context: .
+      dockerfile: Dockerfile.loadtest
+    container_name: genops-load-test
+    environment:
+      - LOCUST_TARGET_HOST=http://genops-app:8000
+      - LOCUST_USERS=100
+      - LOCUST_SPAWN_RATE=10
+    ports:
+      - "8089:8089"
+    depends_on:
+      - genops-app
+    profiles:
+      - loadtest
+    restart: "no"
+
+volumes:
+  genops-data:
+    driver: local
+  genops-config:
+    driver: local
+  genops-logs:
+    driver: local
+  genops-results:
+    driver: local
+  genops-plots:
+    driver: local
+  genops-redis-data:
+    driver: local
+  genops-postgres-data:
+    driver: local
+  genops-monitoring-data:
+    driver: local
+  genops-grafana-data:
+    driver: local
+
+networks:
+  default:
+    name: genops-network
+    driver: bridge

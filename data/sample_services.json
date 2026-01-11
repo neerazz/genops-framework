@@ -1,0 +1,286 @@
+[
+    {
+        "id": "svc_auth",
+        "name": "Authentication Service",
+        "tier": "CRITICAL",
+        "dependencies": [
+            "svc_db_primary",
+            "svc_cache"
+        ],
+        "deployment_frequency_daily": 3.2,
+        "recent_failure_rate": 0.01,
+        "error_budget_remaining": 0.85,
+        "avg_latency_ms": 45.0,
+        "availability_99d": 0.9995
+    },
+    {
+        "id": "svc_payment",
+        "name": "Payment Processing",
+        "tier": "CRITICAL",
+        "dependencies": [
+            "svc_db_primary",
+            "svc_auth",
+            "svc_fraud"
+        ],
+        "deployment_frequency_daily": 1.5,
+        "recent_failure_rate": 0.005,
+        "error_budget_remaining": 0.92,
+        "avg_latency_ms": 120.0,
+        "availability_99d": 0.9999
+    },
+    {
+        "id": "svc_user_profile",
+        "name": "User Profile Service",
+        "tier": "HIGH",
+        "dependencies": [
+            "svc_db_secondary",
+            "svc_cache"
+        ],
+        "deployment_frequency_daily": 4.8,
+        "recent_failure_rate": 0.02,
+        "error_budget_remaining": 0.78,
+        "avg_latency_ms": 35.0,
+        "availability_99d": 0.998
+    },
+    {
+        "id": "svc_notification",
+        "name": "Notification Service",
+        "tier": "MEDIUM",
+        "dependencies": [
+            "svc_queue",
+            "svc_email",
+            "svc_push"
+        ],
+        "deployment_frequency_daily": 6.0,
+        "recent_failure_rate": 0.03,
+        "error_budget_remaining": 0.65,
+        "avg_latency_ms": 25.0,
+        "availability_99d": 0.995
+    },
+    {
+        "id": "svc_search",
+        "name": "Search Service",
+        "tier": "HIGH",
+        "dependencies": [
+            "svc_elasticsearch",
+            "svc_cache"
+        ],
+        "deployment_frequency_daily": 2.1,
+        "recent_failure_rate": 0.015,
+        "error_budget_remaining": 0.88,
+        "avg_latency_ms": 150.0,
+        "availability_99d": 0.997
+    },
+    {
+        "id": "svc_analytics",
+        "name": "Analytics Pipeline",
+        "tier": "LOW",
+        "dependencies": [
+            "svc_warehouse",
+            "svc_queue"
+        ],
+        "deployment_frequency_daily": 8.5,
+        "recent_failure_rate": 0.05,
+        "error_budget_remaining": 0.55,
+        "avg_latency_ms": 500.0,
+        "availability_99d": 0.98
+    },
+    {
+        "id": "svc_inventory",
+        "name": "Inventory Management",
+        "tier": "HIGH",
+        "dependencies": [
+            "svc_db_primary",
+            "svc_warehouse_api"
+        ],
+        "deployment_frequency_daily": 3.0,
+        "recent_failure_rate": 0.018,
+        "error_budget_remaining": 0.82,
+        "avg_latency_ms": 80.0,
+        "availability_99d": 0.998
+    },
+    {
+        "id": "svc_shipping",
+        "name": "Shipping Calculator",
+        "tier": "MEDIUM",
+        "dependencies": [
+            "svc_carrier_api",
+            "svc_cache"
+        ],
+        "deployment_frequency_daily": 4.2,
+        "recent_failure_rate": 0.025,
+        "error_budget_remaining": 0.72,
+        "avg_latency_ms": 200.0,
+        "availability_99d": 0.994
+    },
+    {
+        "id": "svc_recommendation",
+        "name": "Recommendation Engine",
+        "tier": "MEDIUM",
+        "dependencies": [
+            "svc_ml_model",
+            "svc_user_profile",
+            "svc_cache"
+        ],
+        "deployment_frequency_daily": 2.5,
+        "recent_failure_rate": 0.035,
+        "error_budget_remaining": 0.68,
+        "avg_latency_ms": 180.0,
+        "availability_99d": 0.993
+    },
+    {
+        "id": "svc_cdn",
+        "name": "CDN Assets Service",
+        "tier": "LOW",
+        "dependencies": [
+            "svc_storage"
+        ],
+        "deployment_frequency_daily": 10.0,
+        "recent_failure_rate": 0.01,
+        "error_budget_remaining": 0.90,
+        "avg_latency_ms": 15.0,
+        "availability_99d": 0.999
+    },
+    {
+        "id": "svc_logging",
+        "name": "Centralized Logging",
+        "tier": "LOW",
+        "dependencies": [
+            "svc_elasticsearch",
+            "svc_queue"
+        ],
+        "deployment_frequency_daily": 5.0,
+        "recent_failure_rate": 0.02,
+        "error_budget_remaining": 0.80,
+        "avg_latency_ms": 10.0,
+        "availability_99d": 0.99
+    },
+    {
+        "id": "svc_monitoring",
+        "name": "Metrics Collection",
+        "tier": "MEDIUM",
+        "dependencies": [
+            "svc_timeseries_db"
+        ],
+        "deployment_frequency_daily": 3.5,
+        "recent_failure_rate": 0.015,
+        "error_budget_remaining": 0.85,
+        "avg_latency_ms": 20.0,
+        "availability_99d": 0.996
+    },
+    {
+        "id": "svc_gateway",
+        "name": "API Gateway",
+        "tier": "CRITICAL",
+        "dependencies": [
+            "svc_auth",
+            "svc_rate_limiter"
+        ],
+        "deployment_frequency_daily": 1.0,
+        "recent_failure_rate": 0.008,
+        "error_budget_remaining": 0.95,
+        "avg_latency_ms": 5.0,
+        "availability_99d": 0.9999
+    },
+    {
+        "id": "svc_order",
+        "name": "Order Processing",
+        "tier": "CRITICAL",
+        "dependencies": [
+            "svc_payment",
+            "svc_inventory",
+            "svc_notification"
+        ],
+        "deployment_frequency_daily": 2.0,
+        "recent_failure_rate": 0.012,
+        "error_budget_remaining": 0.88,
+        "avg_latency_ms": 250.0,
+        "availability_99d": 0.9998
+    },
+    {
+        "id": "svc_review",
+        "name": "Product Reviews",
+        "tier": "LOW",
+        "dependencies": [
+            "svc_db_secondary",
+            "svc_moderation"
+        ],
+        "deployment_frequency_daily": 7.0,
+        "recent_failure_rate": 0.04,
+        "error_budget_remaining": 0.60,
+        "avg_latency_ms": 40.0,
+        "availability_99d": 0.985
+    },
+    {
+        "id": "svc_cart",
+        "name": "Shopping Cart",
+        "tier": "HIGH",
+        "dependencies": [
+            "svc_cache",
+            "svc_inventory"
+        ],
+        "deployment_frequency_daily": 4.0,
+        "recent_failure_rate": 0.02,
+        "error_budget_remaining": 0.75,
+        "avg_latency_ms": 30.0,
+        "availability_99d": 0.997
+    },
+    {
+        "id": "svc_wishlist",
+        "name": "Wishlist Service",
+        "tier": "LOW",
+        "dependencies": [
+            "svc_db_secondary",
+            "svc_user_profile"
+        ],
+        "deployment_frequency_daily": 6.5,
+        "recent_failure_rate": 0.03,
+        "error_budget_remaining": 0.70,
+        "avg_latency_ms": 25.0,
+        "availability_99d": 0.99
+    },
+    {
+        "id": "svc_pricing",
+        "name": "Dynamic Pricing",
+        "tier": "HIGH",
+        "dependencies": [
+            "svc_ml_model",
+            "svc_inventory",
+            "svc_cache"
+        ],
+        "deployment_frequency_daily": 3.0,
+        "recent_failure_rate": 0.022,
+        "error_budget_remaining": 0.80,
+        "avg_latency_ms": 100.0,
+        "availability_99d": 0.996
+    },
+    {
+        "id": "svc_fraud",
+        "name": "Fraud Detection",
+        "tier": "CRITICAL",
+        "dependencies": [
+            "svc_ml_model",
+            "svc_payment"
+        ],
+        "deployment_frequency_daily": 1.5,
+        "recent_failure_rate": 0.005,
+        "error_budget_remaining": 0.93,
+        "avg_latency_ms": 50.0,
+        "availability_99d": 0.9999
+    },
+    {
+        "id": "svc_support",
+        "name": "Customer Support",
+        "tier": "MEDIUM",
+        "dependencies": [
+            "svc_user_profile",
+            "svc_order",
+            "svc_chat"
+        ],
+        "deployment_frequency_daily": 5.5,
+        "recent_failure_rate": 0.028,
+        "error_budget_remaining": 0.68,
+        "avg_latency_ms": 60.0,
+        "availability_99d": 0.993
+    }
+]

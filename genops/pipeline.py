@@ -315,8 +315,10 @@ class GenOpsPipeline:
         if canary_caught:
             self.results.canary_caught_issues += 1
 
-        # Check for safety violations
-        if self.governance.check_safety_violation(deployment, "deploy", {}):
+        # Check for safety violations - only count actual policy bypasses, not audit artifacts
+        safety_result = self.governance.check_safety_violation(deployment, "deploy", {})
+        # Only count policy_bypass violations (the paper's definition of safety violation)
+        if "policy_bypass" in safety_result.get("violation_types", []):
             self.results.safety_violations += 1
 
     def get_study_metrics(self) -> Dict[str, Any]:

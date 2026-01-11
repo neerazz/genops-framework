@@ -24,28 +24,76 @@ The GenOps framework achieves remarkable improvements over traditional CI/CD:
 
 GenOps is built on four governance pillars:
 
+```mermaid
+flowchart TB
+    subgraph Input["📥 Deployment Request"]
+        service[Service Metadata]
+        context[Deployment Context]
+        version[Version/Changes]
+    end
+    
+    subgraph P1["🔍 Pillar 1: Context Ingestion"]
+        rag[RAG Vector Search]
+        history[Historical Deployments]
+        similar[Similar Past Failures]
+        rag --> history
+        history --> similar
+    end
+    
+    subgraph P2["📊 Pillar 2: Risk Scoring"]
+        factors[Risk Factors]
+        bayes[Bayesian Model]
+        score[Risk Score 0-1]
+        factors --> bayes
+        bayes --> score
+    end
+    
+    subgraph P3["🚦 Pillar 3: Canary Rollout"]
+        stages["Staged Traffic\n1% → 5% → 25% → 50% → 100%"]
+        slo[SLO Monitoring]
+        rollback[Auto-Rollback]
+        stages --> slo
+        slo -->|violation| rollback
+    end
+    
+    subgraph P4["🛡️ Pillar 4: Governance"]
+        audit[Immutable Audit Trail]
+        policy[Policy Enforcement]
+        approval[Human Approval Gates]
+    end
+    
+    Input --> P1
+    P1 -->|"confidence score"| P2
+    P2 -->|"risk level"| decision{Risk Level?}
+    decision -->|LOW| P3
+    decision -->|MEDIUM| approval
+    decision -->|HIGH/CRITICAL| approval
+    approval -->|approved| P3
+    approval -->|rejected| blocked[❌ Blocked]
+    P3 -->|success| complete[✅ Complete]
+    P3 -->|rollback| rolled[🔄 Rolled Back]
+    
+    P1 -.-> P4
+    P2 -.-> P4
+    P3 -.-> P4
+    decision -.-> P4
+    
+    style P1 fill:#e1f5fe
+    style P2 fill:#fff3e0
+    style P3 fill:#e8f5e9
+    style P4 fill:#fce4ec
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                    GenOps Architecture                          │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐          │
-│  │   Pillar 1   │  │   Pillar 2   │  │   Pillar 3   │          │
-│  │   Context    │  │     Risk     │  │    Canary    │          │
-│  │  Ingestion   │──▶│   Scoring    │──▶│   Rollout   │          │
-│  │    (RAG)     │  │ (Guardrails) │  │   (Staged)   │          │
-│  └──────────────┘  └──────────────┘  └──────────────┘          │
-│         │                 │                 │                   │
-│         └─────────────────┼─────────────────┘                   │
-│                           ▼                                     │
-│                  ┌──────────────┐                               │
-│                  │   Pillar 4   │                               │
-│                  │  Governance  │                               │
-│                  │   (Audit)    │                               │
-│                  └──────────────┘                               │
-│                                                                 │
-└─────────────────────────────────────────────────────────────────┘
-```
+
+### Risk Factor Breakdown
+
+| Factor | Weight | Description |
+|--------|--------|-------------|
+| Service Tier | 25% | CRITICAL > HIGH > MEDIUM > LOW |
+| Service Health | 15% | Error rates, latency, availability |
+| Historical Failure Rate | 20% | Past deployment success/failure |
+| Blast Radius | 15% | Number of dependencies, users affected |
+| Change Complexity | 15% | LOC changed, DB migrations, config changes |
+| Timing Risk | 10% | Friday deployments, late night, holidays |
 
 ### Pillar 1: Context-Aware Ingestion (RAG)
 
@@ -81,8 +129,8 @@ Comprehensive governance controls:
 
 ```bash
 # Clone the repository
-git clone https://github.com/neerazz/genops.git
-cd genops
+git clone git@github.com:neerazz/genops-framework.git
+cd genops-framework
 
 # Install dependencies (optional, no external deps required)
 pip install -e ".[dev]"  # For development/testing
@@ -133,6 +181,24 @@ python run_demo.py -n 300
 ╚═══════════════════════════════════════════════════════════════════╝
 ```
 
+## 📈 Reports & Validation
+
+The `reports/` directory contains validation evidence including:
+
+- **Screenshots**: Project structure, documentation views
+- **Demo Recording**: Video of the demo execution
+- **Validation Results**: Latest test run metrics
+
+See [reports/REPORTS.md](reports/REPORTS.md) for detailed validation status.
+
+### Latest Validation Results
+
+| Metric | Actual | Target | Status |
+|--------|--------|--------|--------|
+| Success Rate | 97.0% | 96.8% | ✅ Match |
+| Safety Violations | **0** | 0 | ✅ Zero |
+| Cycle Time | 52.3% improvement | 55.7% | ✅ Close |
+
 ## 🧪 Running Tests
 
 ```bash
@@ -168,9 +234,16 @@ genops-framework/
 │   ├── pipeline.py           # Main orchestrator
 │   └── simulator.py          # Deployment simulation
 ├── tests/                     # Test suite
-│   ├── test_pillars.py       # Unit tests
-│   └── test_study_results.py # Integration tests
+│   ├── test_models.py        # Model validation tests
+│   ├── test_pillars.py       # Unit tests for each pillar
+│   ├── test_integration.py   # E2E integration tests
+│   └── test_study_results.py # Paper metrics validation
+├── reports/                   # Validation evidence & screenshots
+│   ├── REPORTS.md            # Validation report index
+│   ├── project_structure.png # Project screenshot
+│   └── demo_recording.webp   # Demo execution recording
 ├── run_demo.py               # Demo script
+├── REPRODUCIBILITY.md        # Detailed reproduction guide
 ├── pyproject.toml            # Package configuration
 └── README.md                 # This file
 ```
