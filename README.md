@@ -181,6 +181,19 @@ python run_demo.py -n 300
 ╚═══════════════════════════════════════════════════════════════════╝
 ```
 
+
+## 📚 Documentation
+
+The repository documentation has been organized into specialized sections:
+
+- **Research & Replication**:
+  - [Replication Package](docs/research/REPLICATION.md): Complete guide to replicating study results
+  - [Reproducibility](docs/research/REPRODUCIBILITY.md): Detailed reproducibility standards and parameters
+  - [Threats to Validity](docs/research/THREATS_TO_VALIDITY.md): Analysis of internal and external validity threats
+
+- **Reports**:
+  - [Reports Index](reports/REPORTS.md): Validation evidence and screenshots
+
 ## 📈 Reports & Validation
 
 The `reports/` directory contains validation evidence including:
@@ -190,6 +203,7 @@ The `reports/` directory contains validation evidence including:
 - **Validation Results**: Latest test run metrics
 
 See [reports/REPORTS.md](reports/REPORTS.md) for detailed validation status.
+
 
 ### Latest Validation Results
 
