@@ -2,10 +2,16 @@
 
 **A Governance-First Architecture for AI in CI/CD Pipelines**
 
+[![Paper: JISEM](https://img.shields.io/badge/JISEM-2026-blue)](https://doi.org/10.52783/jisem.v11i1s.14322)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Reproducibility](https://img.shields.io/badge/reproducibility-simulation--backed-green)](#-study-results)
 
-This framework implements the GenOps architecture as presented at **Conf42 DevOps 2026**. It demonstrates how to safely integrate AI into deployment pipelines while maintaining governance controls.
+This framework implements the GenOps architecture, peer-reviewed in the *Journal of Information Systems Engineering and Management* ([DOI 10.52783/jisem.v11i1s.14322](https://doi.org/10.52783/jisem.v11i1s.14322), 2026), and presented at **Conf42 DevOps 2026**. It demonstrates how to safely integrate AI into deployment pipelines while maintaining governance controls.
+
+**Governance-first architecture for embedding generative AI into CI/CD pipelines.** GenOps treats AI as a governed deployment actor, not an unbounded assistant — combining operational context ingestion, risk-scored autonomy, staged canary rollouts, and immutable audit trails so teams can use generative AI in delivery pipelines without removing production safety controls.
+
+> **Reproducibility scope:** The public repo is **simulation-backed**. The enterprise deployment dataset described in the paper (15,847 deployments across 127 microservices, 3 organizations, 8 months) is not included here. External users should treat this package as a reproducible framework and reference implementation rather than a release of proprietary production logs.
 
 ## 📊 Study Results
 
